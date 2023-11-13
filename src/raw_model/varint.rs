@@ -32,7 +32,7 @@ impl BufferView for VarInt {
         let mut rel_offset = offset;
         let mut finished = false;
         let mut bytes: Vec<u8> = vec![];
-        while let Some(current) = buffer.get(offset) {
+        while let Some(current) = buffer.get(rel_offset) {
             finished = current >> 7 == 1;
             bytes.push(*current);
             rel_offset += 1;
