@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use super::{varint::VarInt, BufferView};
 
 pub struct RawClass {
@@ -5,6 +7,21 @@ pub struct RawClass {
     pub extra_values_count: VarInt,
     pub extra_values: Vec<u8>,
     pub class_name: Vec<u8>,
+}
+
+impl Debug for RawClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("RawClass")
+            .field("class_name_length", &self.class_name_length)
+            .field("extra_values_count", &self.extra_values_count)
+            .field("extra_values", &self.extra_values)
+            .field("class_name", &self.class_name)
+            .field(
+                "class_name_string",
+                &String::from_utf8(self.class_name.to_owned()),
+            )
+            .finish()
+    }
 }
 
 impl BufferView for RawClass {
@@ -33,7 +50,7 @@ impl BufferView for RawClass {
                 })? as usize
                 * 4;
 
-        if buffer.len() <= rel_offset + extra_values_count_value {
+        if buffer.len() < rel_offset + extra_values_count_value {
             return Err(super::ParseError {
                 offset,
                 rel_offset,
@@ -54,7 +71,7 @@ impl BufferView for RawClass {
                     reason,
                 })? as usize;
 
-        if buffer.len() <= rel_offset + class_name_length_value {
+        if buffer.len() < rel_offset + class_name_length_value {
             return Err(super::ParseError {
                 offset,
                 rel_offset,

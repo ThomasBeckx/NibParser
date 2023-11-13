@@ -41,9 +41,21 @@ impl NibFile {
                     reason: "Keys memory overflowed into values".to_string(),
                 });
             }
-            let key = RawKey::from_buffer(&self.buffer, index)?;
-            index += key.size();
-            keys.push(key);
+            match RawKey::from_buffer(&self.buffer, index) {
+                Ok(key) => {
+                    index += key.size();
+                    keys.push(key);
+                },
+                Err(e) => {
+                    println!(
+                        "Partial key extraction, {} of {} retrieved: {:?}",
+                        keys.len(),
+                        self.key_count,
+                        keys
+                    );
+                    return Err(e);
+                }
+            }
         }
 
         Ok(keys)
@@ -62,9 +74,21 @@ impl NibFile {
                     reason: "Objects memory overflowed into keys".to_string(),
                 });
             }
-            let object = RawObject::from_buffer(&self.buffer, index)?;
-            index += object.size();
-            objects.push(object);
+            match RawObject::from_buffer(&self.buffer, index) {
+                Ok(object) => {
+                    index += object.size();
+                    objects.push(object);
+                },
+                Err(e) => {
+                    println!(
+                        "Partial object extraction, {} of {} retrieved: {:?}",
+                        objects.len(),
+                        self.object_count,
+                        objects
+                    );
+                    return Err(e);
+                }
+            }
         }
 
         Ok(objects)
@@ -83,9 +107,21 @@ impl NibFile {
                     reason: "Values memory overflowed into classes".to_string(),
                 });
             }
-            let value = RawValue::from_buffer(&self.buffer, index).unwrap();
-            index += value.size();
-            values.push(value);
+            match RawValue::from_buffer(&self.buffer, index) {
+                Ok(value) => {
+                    index += value.size();
+                    values.push(value);
+                },
+                Err(e) => {
+                    println!(
+                        "Partial value extraction, {} of {} retrieved: {:?}",
+                        values.len(),
+                        self.value_count,
+                        values
+                    );
+                    return Err(e);
+                }
+            }
         }
 
         Ok(values)
@@ -104,9 +140,21 @@ impl NibFile {
                     reason: "Classes memory overflowed out of buffer".to_string(),
                 });
             }
-            let class = RawClass::from_buffer(&self.buffer, index).unwrap();
-            index += class.size();
-            classes.push(class);
+            match RawClass::from_buffer(&self.buffer, index) {
+                Ok(class) => {
+                    index += class.size();
+                    classes.push(class);
+                }
+                Err(e) => {
+                    println!(
+                        "Partial class extraction, {} of {} retrieved: {:?}",
+                        classes.len(),
+                        self.class_count,
+                        classes
+                    );
+                    return Err(e);
+                }
+            }
         }
 
         Ok(classes)

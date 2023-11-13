@@ -27,7 +27,7 @@ impl BufferView for RawKey {
             }
         };
 
-        if buffer.len() <= rel_offset + key_length_value {
+        if buffer.len() < rel_offset + key_length_value {
             return Err(ParseError {
                 offset,
                 rel_offset,

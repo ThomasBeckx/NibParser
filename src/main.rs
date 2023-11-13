@@ -26,7 +26,6 @@ fn main() {
     let input = fs::read(args.get(1).unwrap()).unwrap();
 
     let nib = NibFile::from_buffer(input).unwrap();
-    println!("{}", nib);
 
     let raw_objects = nib.get_objects().unwrap();
     let raw_keys = nib.get_keys().unwrap();

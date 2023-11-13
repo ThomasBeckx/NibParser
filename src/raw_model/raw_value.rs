@@ -24,6 +24,7 @@ fn data_type_size(data_type: u8) -> Option<i8> {
     Some(size)
 }
 
+#[derive(Debug)]
 pub struct RawValue {
     pub key_index: VarInt,
     pub value_type: u8,
@@ -79,7 +80,7 @@ impl BufferView for RawValue {
                 }
             };
 
-            if buffer.len() <= rel_offset + var_value_size_value {
+            if buffer.len() < rel_offset + var_value_size_value {
                 return Err(super::ParseError {
                     offset,
                     rel_offset,
@@ -88,7 +89,7 @@ impl BufferView for RawValue {
             }
             buffer[rel_offset..rel_offset + var_value_size_value].to_vec()
         } else {
-            if buffer.len() <= rel_offset + value_size as usize {
+            if buffer.len() < rel_offset + value_size as usize {
                 return Err(super::ParseError {
                     offset,
                     rel_offset,
